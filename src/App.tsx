@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Portfolio from "./pages/Portfolio";
 import Profile from "./pages/Profile";
+import Analytics from "./pages/Analytics";
+import BankAccounts from "./pages/BankAccounts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,16 @@ const App = () => (
             <Route path="/portfolio" element={
               <ProtectedRoute>
                 <Portfolio />
+              </ProtectedRoute>
+            } />
+            <Route path="/analytics" element={
+              <ProtectedRoute>
+                <Analytics />
+              </ProtectedRoute>
+            } />
+            <Route path="/bank-accounts" element={
+              <ProtectedRoute>
+                <BankAccounts />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={

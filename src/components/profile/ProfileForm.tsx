@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,12 +16,22 @@ export function ProfileForm() {
   const { profile, loading, updateUserProfile } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   
-  const { register, handleSubmit } = useForm<ProfileFormData>({
+  const { register, handleSubmit, reset } = useForm<ProfileFormData>({
     defaultValues: {
       full_name: profile?.full_name || '',
       phone: profile?.phone || '',
     }
   });
+
+  // Reset form when profile data loads
+  useEffect(() => {
+    if (profile) {
+      reset({
+        full_name: profile.full_name || '',
+        phone: profile.phone || '',
+      });
+    }
+  }, [profile, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
     await updateUserProfile(data);

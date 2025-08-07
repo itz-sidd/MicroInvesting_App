@@ -25,14 +25,13 @@ import {
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Portfolio", url: "/portfolio", icon: TrendingUp },
-  { title: "Savings", url: "/savings", icon: PiggyBank },
   { title: "Transactions", url: "/transactions", icon: CreditCard },
+  { title: "Portfolio", url: "/portfolio", icon: TrendingUp },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Bank Accounts", url: "/bank-accounts", icon: Wallet },
 ];
 
 const accountItems = [
-  { title: "Linked Accounts", url: "/accounts", icon: Wallet },
   { title: "Profile", url: "/profile", icon: User },
   { title: "Settings", url: "/settings", icon: Settings },
 ];

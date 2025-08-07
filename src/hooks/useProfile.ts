@@ -35,10 +35,20 @@ export const useProfile = () => {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      dispatch(setProfile({ ...data, email: user.email || '' }));
+      if (data) {
+        dispatch(setProfile({ ...data, email: user.email || '' }));
+      } else {
+        // No profile exists yet, create a basic one
+        dispatch(setProfile({ 
+          id: user.id, 
+          email: user.email || '', 
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }));
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
       toast({
