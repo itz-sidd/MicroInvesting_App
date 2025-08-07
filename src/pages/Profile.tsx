@@ -2,6 +2,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { AllocationSettings } from '@/components/investment/AllocationSettings';
 
+// Profile page component
 export default function Profile() {
   return (
     <DashboardLayout>
