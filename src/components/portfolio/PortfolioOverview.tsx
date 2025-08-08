@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { usePortfolio } from '@/hooks/usePortfolio';
+import { DemoPortfolioButton } from './DemoPortfolioButton';
 import { TrendingUp, PieChart, DollarSign, Loader2 } from 'lucide-react';
 import { Doughnut } from 'react-chartjs-2';
 import {
@@ -137,9 +138,12 @@ export function PortfolioOverview() {
         </CardHeader>
         <CardContent>
           {investments.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
-              No investments yet. Start by investing your round-ups!
-            </p>
+            <div className="text-center py-6 space-y-4">
+              <p className="text-muted-foreground">
+                No investments yet. Get started with demo investments!
+              </p>
+              <DemoPortfolioButton />
+            </div>
           ) : (
             <div className="space-y-3">
               {investments.slice(0, 5).map((investment) => (

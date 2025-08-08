@@ -66,6 +66,7 @@ export const useProfile = () => {
 
     dispatch(setLoading(true));
     try {
+      // First try to update existing profile
       const { data, error } = await supabase
         .from('profiles')
         .update(updates)
@@ -73,8 +74,27 @@ export const useProfile = () => {
         .select()
         .single();
 
-      if (error) throw error;
-      dispatch(updateProfile(data));
+      if (error) {
+        // If profile doesn't exist, create it
+        if (error.code === 'PGRST116') {
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: user.id,
+              ...updates,
+            })
+            .select()
+            .single();
+
+          if (createError) throw createError;
+          dispatch(setProfile({ ...newProfile, email: user.email || '' }));
+        } else {
+          throw error;
+        }
+      } else {
+        dispatch(updateProfile(data));
+      }
+
       toast({
         title: "Success",
         description: "Profile updated successfully",
