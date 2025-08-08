@@ -55,7 +55,24 @@ export const usePortfolio = () => {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setPortfolios(data || []);
+
+      if (!data || data.length === 0) {
+        // Auto-create a default portfolio if none exists
+        const { data: created, error: createError } = await supabase
+          .from('portfolios')
+          .insert({
+            user_id: user.id,
+            name: 'Main Portfolio',
+            is_active: true,
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        setPortfolios(created ? [created] : []);
+      } else {
+        setPortfolios(data);
+      }
     } catch (error) {
       console.error('Error fetching portfolios:', error);
       toast({
