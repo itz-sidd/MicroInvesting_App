@@ -71,9 +71,18 @@ export function PortfolioOverview() {
     return acc;
   }, {} as Record<string, number>);
 
-  const totalInvested = Object.values(investmentsByType).reduce((sum, value) => sum + value, 0);
-  const gainLoss = totalValue - totalInvested;
+  // Calculate total current value from investments
+  const totalCurrentValue = Object.values(investmentsByType).reduce((sum, value) => sum + value, 0);
+  
+  // Calculate total invested (cost basis) from investments
+  const totalInvested = investments.reduce((sum, inv) => sum + (inv.shares * inv.avg_cost_per_share), 0);
+  
+  // Calculate gain/loss based on current value vs cost basis
+  const gainLoss = totalCurrentValue - totalInvested;
   const gainLossPercentage = totalInvested > 0 ? (gainLoss / totalInvested) * 100 : 0;
+  
+  // Use the actual calculated total instead of portfolio.total_value
+  const displayTotalValue = totalCurrentValue + (mainPortfolio?.cash_balance || 0);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -83,7 +92,7 @@ export function PortfolioOverview() {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
+          <div className="text-2xl font-bold">${displayTotalValue.toFixed(2)}</div>
           <div className="flex items-center gap-2 mt-2">
             <TrendingUp className={`h-4 w-4 ${gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`} />
             <span className={`text-sm ${gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
