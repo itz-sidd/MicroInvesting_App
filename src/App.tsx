@@ -14,6 +14,8 @@ import Portfolio from "./pages/Portfolio";
 import Profile from "./pages/Profile";
 import Analytics from "./pages/Analytics";
 import BankAccounts from "./pages/BankAccounts";
+import Guide from "./pages/Guide";
+import MLModel from "./pages/MLModel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +58,16 @@ const App = () => (
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/guide" element={
+              <ProtectedRoute>
+                <Guide />
+              </ProtectedRoute>
+            } />
+            <Route path="/ml-model" element={
+              <ProtectedRoute>
+                <MLModel />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

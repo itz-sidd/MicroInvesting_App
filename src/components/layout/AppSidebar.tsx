@@ -7,7 +7,9 @@ import {
   Settings, 
   User,
   CreditCard,
-  BarChart3
+  BarChart3,
+  BookOpen,
+  Brain
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
@@ -27,8 +29,10 @@ const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Transactions", url: "/transactions", icon: CreditCard },
   { title: "Portfolio", url: "/portfolio", icon: TrendingUp },
+  { title: "ML Model", url: "/ml-model", icon: Brain },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Bank Accounts", url: "/bank-accounts", icon: Wallet },
+  { title: "Guide", url: "/guide", icon: BookOpen },
 ];
 
 const accountItems = [
