@@ -1,5 +1,6 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { PortfolioOverview } from '@/components/portfolio/PortfolioOverview';
+import { RealTimeStocks } from '@/components/portfolio/RealTimeStocks';
 
 export default function Portfolio() {
   return (
@@ -13,6 +14,7 @@ export default function Portfolio() {
         </div>
 
         <PortfolioOverview />
+        <RealTimeStocks />
       </div>
     </DashboardLayout>
   );
