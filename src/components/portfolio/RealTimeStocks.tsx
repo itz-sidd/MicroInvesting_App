@@ -13,17 +13,22 @@ interface StockData {
   change: number;
   changePercent: number;
   lastUpdated: string;
+  market: 'US' | 'IN';
+  currency: string;
 }
 
 export function RealTimeStocks() {
   const [watchlist, setWatchlist] = useState<StockData[]>([
+    // US Stocks
     {
       symbol: 'AAPL',
       name: 'Apple Inc.',
       price: 178.25,
       change: 2.15,
       changePercent: 1.22,
-      lastUpdated: new Date().toLocaleTimeString()
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'US',
+      currency: 'USD'
     },
     {
       symbol: 'GOOGL',
@@ -31,7 +36,9 @@ export function RealTimeStocks() {
       price: 2845.50,
       change: -12.30,
       changePercent: -0.43,
-      lastUpdated: new Date().toLocaleTimeString()
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'US',
+      currency: 'USD'
     },
     {
       symbol: 'MSFT',
@@ -39,7 +46,9 @@ export function RealTimeStocks() {
       price: 412.80,
       change: 5.60,
       changePercent: 1.38,
-      lastUpdated: new Date().toLocaleTimeString()
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'US',
+      currency: 'USD'
     },
     {
       symbol: 'TSLA',
@@ -47,7 +56,60 @@ export function RealTimeStocks() {
       price: 248.42,
       change: -8.25,
       changePercent: -3.21,
-      lastUpdated: new Date().toLocaleTimeString()
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'US',
+      currency: 'USD'
+    },
+    // Indian Stocks
+    {
+      symbol: 'RELIANCE',
+      name: 'Reliance Industries Ltd.',
+      price: 2485.30,
+      change: 45.20,
+      changePercent: 1.85,
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'IN',
+      currency: 'INR'
+    },
+    {
+      symbol: 'TCS',
+      name: 'Tata Consultancy Services',
+      price: 3720.15,
+      change: -28.50,
+      changePercent: -0.76,
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'IN',
+      currency: 'INR'
+    },
+    {
+      symbol: 'INFY',
+      name: 'Infosys Limited',
+      price: 1458.75,
+      change: 22.30,
+      changePercent: 1.55,
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'IN',
+      currency: 'INR'
+    },
+    {
+      symbol: 'HDFCBANK',
+      name: 'HDFC Bank Limited',
+      price: 1632.40,
+      change: -15.80,
+      changePercent: -0.96,
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'IN',
+      currency: 'INR'
+    },
+    {
+      symbol: 'ITC',
+      name: 'ITC Limited',
+      price: 445.60,
+      change: 8.45,
+      changePercent: 1.93,
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'IN',
+      currency: 'INR'
     }
   ]);
   const [searchSymbol, setSearchSymbol] = useState('');
@@ -102,7 +164,9 @@ export function RealTimeStocks() {
       price: Math.random() * 200 + 50, // Random price between 50-250
       change: (Math.random() - 0.5) * 10,
       changePercent: (Math.random() - 0.5) * 5,
-      lastUpdated: new Date().toLocaleTimeString()
+      lastUpdated: new Date().toLocaleTimeString(),
+      market: 'US', // Default to US market for manually added stocks
+      currency: 'USD'
     };
 
     setWatchlist(prev => [...prev, newStock]);
@@ -162,7 +226,7 @@ export function RealTimeStocks() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Enter stock symbol (e.g., AAPL, GOOGL)"
+              placeholder="Enter stock symbol (e.g., AAPL, RELIANCE, TCS, GOOGL)"
               value={searchSymbol}
               onChange={(e) => setSearchSymbol(e.target.value)}
               className="pl-10"
@@ -188,6 +252,12 @@ export function RealTimeStocks() {
                     <Badge variant="secondary" className="font-mono">
                       {stock.symbol}
                     </Badge>
+                    <Badge 
+                      variant={stock.market === 'US' ? 'default' : 'outline'} 
+                      className="text-xs"
+                    >
+                      {stock.market === 'US' ? '🇺🇸 US' : '🇮🇳 IN'}
+                    </Badge>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -206,7 +276,7 @@ export function RealTimeStocks() {
               
               <div className="text-right">
                 <div className="text-lg font-bold">
-                  ${stock.price.toFixed(2)}
+                  {stock.currency === 'USD' ? '$' : '₹'}{stock.price.toFixed(2)}
                 </div>
                 <div className={`flex items-center gap-1 text-sm ${
                   stock.change >= 0 ? 'text-success' : 'text-destructive'
@@ -218,7 +288,7 @@ export function RealTimeStocks() {
                   )}
                   <span>
                     {stock.change >= 0 ? '+' : ''}
-                    {stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
+                    {stock.currency === 'USD' ? '$' : '₹'}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
                   </span>
                 </div>
               </div>
