@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, TrendingUp, TrendingDown, Plus, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface StockData {
   symbol: string;
@@ -18,127 +19,75 @@ interface StockData {
 }
 
 export function RealTimeStocks() {
-  const [watchlist, setWatchlist] = useState<StockData[]>([
-    // US Stocks
-    {
-      symbol: 'AAPL',
-      name: 'Apple Inc.',
-      price: 178.25,
-      change: 2.15,
-      changePercent: 1.22,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'US',
-      currency: 'USD'
-    },
-    {
-      symbol: 'GOOGL',
-      name: 'Alphabet Inc.',
-      price: 2845.50,
-      change: -12.30,
-      changePercent: -0.43,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'US',
-      currency: 'USD'
-    },
-    {
-      symbol: 'MSFT',
-      name: 'Microsoft Corp.',
-      price: 412.80,
-      change: 5.60,
-      changePercent: 1.38,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'US',
-      currency: 'USD'
-    },
-    {
-      symbol: 'TSLA',
-      name: 'Tesla Inc.',
-      price: 248.42,
-      change: -8.25,
-      changePercent: -3.21,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'US',
-      currency: 'USD'
-    },
-    // Indian Stocks
-    {
-      symbol: 'RELIANCE',
-      name: 'Reliance Industries Ltd.',
-      price: 2485.30,
-      change: 45.20,
-      changePercent: 1.85,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'IN',
-      currency: 'INR'
-    },
-    {
-      symbol: 'TCS',
-      name: 'Tata Consultancy Services',
-      price: 3720.15,
-      change: -28.50,
-      changePercent: -0.76,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'IN',
-      currency: 'INR'
-    },
-    {
-      symbol: 'INFY',
-      name: 'Infosys Limited',
-      price: 1458.75,
-      change: 22.30,
-      changePercent: 1.55,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'IN',
-      currency: 'INR'
-    },
-    {
-      symbol: 'HDFCBANK',
-      name: 'HDFC Bank Limited',
-      price: 1632.40,
-      change: -15.80,
-      changePercent: -0.96,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'IN',
-      currency: 'INR'
-    },
-    {
-      symbol: 'ITC',
-      name: 'ITC Limited',
-      price: 445.60,
-      change: 8.45,
-      changePercent: 1.93,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'IN',
-      currency: 'INR'
-    }
-  ]);
+  const [watchlist, setWatchlist] = useState<StockData[]>([]);
   const [searchSymbol, setSearchSymbol] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Simulate real-time updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWatchlist(prev => prev.map(stock => {
-        const randomChange = (Math.random() - 0.5) * 2; // Random change between -1 and 1
-        const newPrice = Math.max(stock.price + randomChange, 0.01);
-        const change = newPrice - stock.price;
-        const changePercent = (change / stock.price) * 100;
-        
-        return {
-          ...stock,
-          price: newPrice,
-          change: change,
-          changePercent: changePercent,
-          lastUpdated: new Date().toLocaleTimeString()
-        };
-      }));
-    }, 3000); // Update every 3 seconds
+  // Default stocks to load initially
+  const defaultStocks = ['AAPL', 'GOOGL', 'MSFT', 'RELIANCE.BSE', 'TCS.BSE', 'INFY.BSE'];
 
-    return () => clearInterval(interval);
+  // Fetch real stock data
+  const fetchStockData = async (symbols: string[]) => {
+    setIsRefreshing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-stock-data', {
+        body: { symbols }
+      });
+
+      if (error) {
+        console.error('Error fetching stock data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch stock data. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data?.data) {
+        const formattedData = data.data.map((stock: any) => ({
+          ...stock,
+          lastUpdated: new Date().toLocaleTimeString(),
+          market: stock.market as 'US' | 'IN',
+          currency: stock.market === 'IN' ? 'INR' : 'USD'
+        }));
+        setWatchlist(formattedData);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch stock data. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefreshing(false);
+      setIsLoading(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchStockData(defaultStocks);
   }, []);
 
-  const addToWatchlist = () => {
+  // Periodic updates every 2 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (watchlist.length > 0) {
+        const symbols = watchlist.map(stock => 
+          stock.market === 'IN' ? `${stock.symbol}.BSE` : stock.symbol
+        );
+        fetchStockData(symbols);
+      }
+    }, 120000); // Update every 2 minutes
+
+    return () => clearInterval(interval);
+  }, [watchlist]);
+
+  const addToWatchlist = async () => {
     if (!searchSymbol.trim()) {
       toast({
         title: "Error",
@@ -158,38 +107,38 @@ export function RealTimeStocks() {
       return;
     }
 
-    const newStock: StockData = {
-      symbol,
-      name: `${symbol} Corporation`,
-      price: Math.random() * 200 + 50, // Random price between 50-250
-      change: (Math.random() - 0.5) * 10,
-      changePercent: (Math.random() - 0.5) * 5,
-      lastUpdated: new Date().toLocaleTimeString(),
-      market: 'US', // Default to US market for manually added stocks
-      currency: 'USD'
-    };
-
-    setWatchlist(prev => [...prev, newStock]);
+    // Add .BSE suffix for known Indian stocks
+    const isIndianStock = ['RELIANCE', 'TCS', 'INFY', 'HDFCBANK', 'ITC'].includes(symbol);
+    const apiSymbol = isIndianStock ? `${symbol}.BSE` : symbol;
+    
+    // Get current symbols plus the new one
+    const currentSymbols = watchlist.map(stock => 
+      stock.market === 'IN' ? `${stock.symbol}.BSE` : stock.symbol
+    );
+    
+    await fetchStockData([...currentSymbols, apiSymbol]);
     setSearchSymbol('');
+    
     toast({
       title: "Stock added",
       description: `${symbol} has been added to your watchlist`
     });
   };
 
-  const refreshData = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setWatchlist(prev => prev.map(stock => ({
-        ...stock,
-        lastUpdated: new Date().toLocaleTimeString()
-      })));
-      setIsRefreshing(false);
-      toast({
-        title: "Data refreshed",
-        description: "Stock prices have been updated"
-      });
-    }, 1000);
+  const refreshData = async () => {
+    if (watchlist.length === 0) {
+      await fetchStockData(defaultStocks);
+    } else {
+      const symbols = watchlist.map(stock => 
+        stock.market === 'IN' ? `${stock.symbol}.BSE` : stock.symbol
+      );
+      await fetchStockData(symbols);
+    }
+    
+    toast({
+      title: "Data refreshed",
+      description: "Stock prices have been updated"
+    });
   };
 
   const removeFromWatchlist = (symbol: string) => {
@@ -199,6 +148,23 @@ export function RealTimeStocks() {
       description: `${symbol} has been removed from your watchlist`
     });
   };
+
+  if (isLoading) {
+    return (
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Real-Time Stock Tracker</CardTitle>
+          <CardDescription>Monitor your favorite stocks with live price updates</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center py-8">
+            <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+            <span className="ml-2 text-muted-foreground">Loading stock data...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mt-6">
@@ -216,7 +182,7 @@ export function RealTimeStocks() {
             className="flex items-center gap-2"
           >
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {isRefreshing ? 'Loading...' : 'Refresh'}
           </Button>
         </div>
       </CardHeader>
@@ -233,7 +199,7 @@ export function RealTimeStocks() {
               onKeyPress={(e) => e.key === 'Enter' && addToWatchlist()}
             />
           </div>
-          <Button onClick={addToWatchlist} className="flex items-center gap-2">
+          <Button onClick={addToWatchlist} className="flex items-center gap-2" disabled={isRefreshing}>
             <Plus className="h-4 w-4" />
             Add
           </Button>
@@ -276,27 +242,29 @@ export function RealTimeStocks() {
               
               <div className="text-right">
                 <div className="text-lg font-bold">
-                  {stock.currency === 'USD' ? '$' : '₹'}{stock.price.toFixed(2)}
+                  {stock.currency === 'USD' ? '$' : '₹'}{stock.price > 0 ? stock.price.toFixed(2) : 'N/A'}
                 </div>
-                <div className={`flex items-center gap-1 text-sm ${
-                  stock.change >= 0 ? 'text-success' : 'text-destructive'
-                }`}>
-                  {stock.change >= 0 ? (
-                    <TrendingUp className="h-3 w-3" />
-                  ) : (
-                    <TrendingDown className="h-3 w-3" />
-                  )}
-                  <span>
-                    {stock.change >= 0 ? '+' : ''}
-                    {stock.currency === 'USD' ? '$' : '₹'}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
-                  </span>
-                </div>
+                {stock.price > 0 && (
+                  <div className={`flex items-center gap-1 text-sm ${
+                    stock.change >= 0 ? 'text-success' : 'text-destructive'
+                  }`}>
+                    {stock.change >= 0 ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
+                    <span>
+                      {stock.change >= 0 ? '+' : ''}
+                      {stock.currency === 'USD' ? '$' : '₹'}{stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
 
-        {watchlist.length === 0 && (
+        {watchlist.length === 0 && !isLoading && (
           <div className="text-center py-8 text-muted-foreground">
             <p>No stocks in your watchlist</p>
             <p className="text-sm">Add some stocks to start tracking their prices</p>
@@ -304,8 +272,8 @@ export function RealTimeStocks() {
         )}
 
         <div className="text-xs text-muted-foreground text-center pt-4 border-t">
-          <p>📈 Prices update automatically every few seconds</p>
-          <p>This is a demo implementation - real API integration would provide actual market data</p>
+          <p>📈 Prices update automatically every 2 minutes</p>
+          <p>Real-time data powered by Alpha Vantage API</p>
         </div>
       </CardContent>
     </Card>
