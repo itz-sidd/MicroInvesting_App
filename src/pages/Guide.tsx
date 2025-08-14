@@ -84,6 +84,27 @@ export default function Guide() {
     }
   ];
 
+  const businessModel = [
+    {
+      title: "Monthly Subscription",
+      description: "$1-3/month covers all services",
+      detail: "Instead of charging per trade, we use a flat monthly fee",
+      icon: DollarSign
+    },
+    {
+      title: "Interest on Cash",
+      description: "Earn interest on uninvested balances",
+      detail: "We share interest earned on your cash holdings with you",
+      icon: PiggyBank
+    },
+    {
+      title: "Transparent Pricing",
+      description: "No hidden fees or surprises",
+      detail: "All costs are clearly disclosed upfront",
+      icon: Shield
+    }
+  ];
+
   const goldenRules = [
     "Never invest money you can't afford to lose",
     "Diversification reduces risk",
@@ -156,7 +177,11 @@ export default function Guide() {
     },
     {
       question: "What fees do you charge?",
-      answer: "We charge a low monthly fee of $1-3 depending on your account type. No trading fees, no withdrawal fees, no hidden charges."
+      answer: "We charge a low monthly subscription fee of $1-3 depending on your account type. This covers all trading, rebalancing, and withdrawals. We don't charge per-transaction fees, which saves you money compared to traditional brokers."
+    },
+    {
+      question: "How do you make money with 'no trading fees'?",
+      answer: "We use a subscription model instead of per-trade fees. We also earn interest on uninvested cash balances and may receive small payments for order routing (which is disclosed and doesn't affect your execution quality)."
     },
     {
       question: "How are my investments managed?",
@@ -324,6 +349,51 @@ export default function Guide() {
                   </div>
                 </div>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Business Model Transparency */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5" />
+              How We Make Money (Transparency)
+            </CardTitle>
+            <CardDescription>
+              Understanding our business model and why we can offer "no trading fees"
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-3">
+              {businessModel.map((item, index) => (
+                <div key={index} className="space-y-3 p-4 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-foreground">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs text-foreground">{item.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-amber-800 mb-1">The Truth About "Free" Trading</h4>
+                  <p className="text-sm text-amber-700">
+                    Most "free" trading apps make money through payment for order flow (selling your order data), 
+                    uninvested cash interest, or expensive premium features. We believe in transparent, 
+                    subscription-based pricing instead.
+                  </p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
