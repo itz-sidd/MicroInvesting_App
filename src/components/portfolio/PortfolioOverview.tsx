@@ -46,12 +46,12 @@ export function PortfolioOverview() {
       {
         data: [allocation.stocks, allocation.bonds, allocation.etfs],
         backgroundColor: [
-          'hsl(var(--chart-1))',
-          'hsl(var(--chart-2))',
-          'hsl(var(--chart-3))',
+          '#3B82F6', // Blue for Stocks
+          '#10B981', // Green for Bonds  
+          '#F59E0B', // Orange for ETFs
         ],
-        borderColor: 'hsl(var(--background))',
-        borderWidth: 2,
+        borderColor: '#ffffff',
+        borderWidth: 3,
         hoverOffset: 4,
       },
     ],

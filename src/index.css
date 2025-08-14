@@ -45,8 +45,8 @@ All colors MUST be HSL.
     --shadow-glow: 0 0 30px hsl(var(--primary-glow) / 0.2);
 
     --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 24 95% 53%;
+    --chart-2: 142 76% 50%;
+    --chart-3: 24 95% 60%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -93,9 +93,9 @@ All colors MUST be HSL.
     --shadow-elegant: 0 4px 20px -4px hsl(var(--primary) / 0.2);
     --shadow-glow: 0 0 30px hsl(var(--primary-glow) / 0.3);
 
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 24 95% 53%;
+    --chart-1: 221 83% 60%;
+    --chart-2: 142 76% 55%;
+    --chart-3: 24 95% 65%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
