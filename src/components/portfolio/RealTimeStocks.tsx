@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, TrendingUp, TrendingDown, Plus, RefreshCw } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Plus, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -18,11 +18,35 @@ interface StockData {
   currency: string;
 }
 
+const availableStocks = {
+  US: [
+    { symbol: 'AAPL', name: 'Apple Inc.' },
+    { symbol: 'GOOGL', name: 'Alphabet Inc.' },
+    { symbol: 'MSFT', name: 'Microsoft Corporation' },
+    { symbol: 'AMZN', name: 'Amazon.com Inc.' },
+    { symbol: 'TSLA', name: 'Tesla Inc.' },
+    { symbol: 'NVDA', name: 'NVIDIA Corporation' },
+    { symbol: 'META', name: 'Meta Platforms Inc.' },
+    { symbol: 'NFLX', name: 'Netflix Inc.' }
+  ],
+  IN: [
+    { symbol: 'RELIANCE', name: 'Reliance Industries' },
+    { symbol: 'TCS', name: 'Tata Consultancy Services' },
+    { symbol: 'INFY', name: 'Infosys Limited' },
+    { symbol: 'HDFCBANK', name: 'HDFC Bank' },
+    { symbol: 'ITC', name: 'ITC Limited' },
+    { symbol: 'BHARTIARTL', name: 'Bharti Airtel' },
+    { symbol: 'KOTAKBANK', name: 'Kotak Mahindra Bank' },
+    { symbol: 'LT', name: 'Larsen & Toubro' }
+  ]
+};
+
 export function RealTimeStocks() {
   const [watchlist, setWatchlist] = useState<StockData[]>([]);
   const [searchSymbol, setSearchSymbol] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAvailableStocks, setShowAvailableStocks] = useState(false);
   const { toast } = useToast();
 
   // Default stocks to load initially
@@ -138,6 +162,29 @@ export function RealTimeStocks() {
     toast({
       title: "Data refreshed",
       description: "Stock prices have been updated"
+    });
+  };
+
+  const addStockToWatchlist = async (symbol: string, market: 'US' | 'IN') => {
+    if (watchlist.some(stock => stock.symbol === symbol)) {
+      toast({
+        title: "Already in watchlist",
+        description: `${symbol} is already in your watchlist`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const apiSymbol = market === 'IN' ? `${symbol}.BSE` : symbol;
+    const currentSymbols = watchlist.map(stock => 
+      stock.market === 'IN' ? `${stock.symbol}.BSE` : stock.symbol
+    );
+    
+    await fetchStockData([...currentSymbols, apiSymbol]);
+    
+    toast({
+      title: "Stock added",
+      description: `${symbol} has been added to your watchlist`
     });
   };
 
@@ -262,6 +309,87 @@ export function RealTimeStocks() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Available Stocks Section */}
+        <div className="border rounded-lg">
+          <Button
+            variant="ghost"
+            onClick={() => setShowAvailableStocks(!showAvailableStocks)}
+            className="w-full flex items-center justify-between p-4 text-left"
+          >
+            <div>
+              <h3 className="font-semibold">Available Stocks</h3>
+              <p className="text-sm text-muted-foreground">Popular stocks you can add to your watchlist</p>
+            </div>
+            {showAvailableStocks ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </Button>
+          
+          {showAvailableStocks && (
+            <div className="p-4 border-t space-y-4">
+              {/* US Stocks */}
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                  🇺🇸 US Stocks
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {availableStocks.US.map((stock) => (
+                    <div
+                      key={stock.symbol}
+                      className="flex items-center justify-between p-2 border rounded hover:bg-accent/5 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="font-mono text-sm font-medium">{stock.symbol}</div>
+                        <div className="text-xs text-muted-foreground truncate">{stock.name}</div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => addStockToWatchlist(stock.symbol, 'US')}
+                        disabled={watchlist.some(s => s.symbol === stock.symbol) || isRefreshing}
+                        className="h-7 w-7 p-0 shrink-0"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Indian Stocks */}
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                  🇮🇳 Indian Stocks
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {availableStocks.IN.map((stock) => (
+                    <div
+                      key={stock.symbol}
+                      className="flex items-center justify-between p-2 border rounded hover:bg-accent/5 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="font-mono text-sm font-medium">{stock.symbol}</div>
+                        <div className="text-xs text-muted-foreground truncate">{stock.name}</div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => addStockToWatchlist(stock.symbol, 'IN')}
+                        disabled={watchlist.some(s => s.symbol === stock.symbol) || isRefreshing}
+                        className="h-7 w-7 p-0 shrink-0"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {watchlist.length === 0 && !isLoading && (
