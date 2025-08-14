@@ -105,24 +105,62 @@ export const usePortfolio = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      // Check for existing investment in the same portfolio with the same symbol
+      const { data: existing } = await supabase
         .from('investments')
-        .insert({
-          ...investment,
-          user_id: user.id,
-        })
-        .select()
-        .single();
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('portfolio_id', investment.portfolio_id)
+        .eq('symbol', investment.symbol);
 
-      if (error) throw error;
-      setInvestments(prev => [...prev, data]);
-      
-      toast({
-        title: "Success",
-        description: "Investment added successfully",
-      });
-      
-      return data;
+      if (existing && existing.length > 0) {
+        // Update existing investment instead of creating duplicate
+        const existingInvestment = existing[0];
+        const newShares = existingInvestment.shares + investment.shares;
+        const newAvgCost = ((existingInvestment.shares * existingInvestment.avg_cost_per_share) + 
+                           (investment.shares * investment.avg_cost_per_share)) / newShares;
+        
+        const { data, error } = await supabase
+          .from('investments')
+          .update({
+            shares: newShares,
+            avg_cost_per_share: newAvgCost,
+            total_value: newShares * (investment.current_price || investment.avg_cost_per_share),
+          })
+          .eq('id', existingInvestment.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        setInvestments(prev => prev.map(inv => inv.id === data.id ? data : inv));
+        
+        toast({
+          title: "Success",
+          description: "Investment updated successfully",
+        });
+        
+        return data;
+      } else {
+        // Create new investment
+        const { data, error } = await supabase
+          .from('investments')
+          .insert({
+            ...investment,
+            user_id: user.id,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setInvestments(prev => [...prev, data]);
+        
+        toast({
+          title: "Success",
+          description: "Investment added successfully",
+        });
+        
+        return data;
+      }
     } catch (error) {
       console.error('Error adding investment:', error);
       toast({
@@ -212,8 +250,98 @@ export const usePortfolio = () => {
     }
   };
 
+  const consolidateInvestments = async () => {
+    if (!user) return;
+
+    try {
+      // Group investments by symbol and portfolio
+      const groupedInvestments = investments.reduce((acc, inv) => {
+        const key = `${inv.portfolio_id}-${inv.symbol}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(inv);
+        return acc;
+      }, {} as Record<string, Investment[]>);
+
+      // Process each group
+      for (const [key, invGroup] of Object.entries(groupedInvestments)) {
+        if (invGroup.length > 1) {
+          // Calculate consolidated values
+          const totalShares = invGroup.reduce((sum, inv) => sum + inv.shares, 0);
+          const totalCost = invGroup.reduce((sum, inv) => sum + (inv.shares * inv.avg_cost_per_share), 0);
+          const avgCost = totalCost / totalShares;
+          const currentPrice = invGroup[0].current_price || invGroup[0].avg_cost_per_share;
+          
+          // Keep the oldest investment and update it
+          const keepInvestment = invGroup.sort((a, b) => 
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          )[0];
+          
+          // Update the kept investment
+          await supabase
+            .from('investments')
+            .update({
+              shares: totalShares,
+              avg_cost_per_share: avgCost,
+              total_value: totalShares * currentPrice,
+            })
+            .eq('id', keepInvestment.id);
+
+          // Delete the duplicate investments
+          const duplicateIds = invGroup.filter(inv => inv.id !== keepInvestment.id).map(inv => inv.id);
+          if (duplicateIds.length > 0) {
+            await supabase
+              .from('investments')
+              .delete()
+              .in('id', duplicateIds);
+          }
+        }
+      }
+
+      // Refresh data
+      await fetchInvestments();
+      await recalculatePortfolioValues();
+      
+      toast({
+        title: "Success",
+        description: "Portfolio consolidated successfully",
+      });
+    } catch (error) {
+      console.error('Error consolidating investments:', error);
+      toast({
+        title: "Error",
+        description: "Failed to consolidate portfolio",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const recalculatePortfolioValues = async () => {
+    if (!user) return;
+
+    for (const portfolio of portfolios) {
+      const portfolioInvestments = investments.filter(inv => inv.portfolio_id === portfolio.id);
+      const calculatedValue = portfolioInvestments.reduce((sum, inv) => {
+        return sum + (inv.total_value || (inv.shares * (inv.current_price || inv.avg_cost_per_share)));
+      }, 0);
+
+      await supabase
+        .from('portfolios')
+        .update({ total_value: calculatedValue })
+        .eq('id', portfolio.id)
+        .eq('user_id', user.id);
+    }
+
+    await fetchPortfolios();
+  };
+
   const mainPortfolio = portfolios.find(p => p.is_active) || portfolios[0];
-  const totalValue = portfolios.reduce((sum, p) => sum + p.total_value, 0);
+  
+  // Calculate total value from actual investments rather than database field
+  const totalValue = investments.reduce((sum, inv) => {
+    return sum + (inv.total_value || (inv.shares * (inv.current_price || inv.avg_cost_per_share)));
+  }, 0);
 
   return {
     portfolios,
@@ -225,5 +353,7 @@ export const usePortfolio = () => {
     fetchInvestments,
     addInvestment,
     executeRoundUpInvestment,
+    consolidateInvestments,
+    recalculatePortfolioValues,
   };
 };
