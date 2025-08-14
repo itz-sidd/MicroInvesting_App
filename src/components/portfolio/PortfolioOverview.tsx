@@ -46,11 +46,13 @@ export function PortfolioOverview() {
       {
         data: [allocation.stocks, allocation.bonds, allocation.etfs],
         backgroundColor: [
-          'hsl(var(--primary))',
-          'hsl(var(--secondary))',
-          'hsl(var(--accent))',
+          'hsl(var(--chart-1))',
+          'hsl(var(--chart-2))',
+          'hsl(var(--chart-3))',
         ],
-        borderWidth: 0,
+        borderColor: 'hsl(var(--background))',
+        borderWidth: 2,
+        hoverOffset: 4,
       },
     ],
   };
@@ -61,6 +63,21 @@ export function PortfolioOverview() {
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+          font: {
+            size: 12,
+          },
+          color: 'hsl(var(--foreground))',
+        },
+      },
+      tooltip: {
+        backgroundColor: 'hsl(var(--popover))',
+        titleColor: 'hsl(var(--popover-foreground))',
+        bodyColor: 'hsl(var(--popover-foreground))',
+        borderColor: 'hsl(var(--border))',
+        borderWidth: 1,
       },
     },
   };
