@@ -1,6 +1,7 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { 
   BookOpen, 
   Target, 
@@ -11,7 +12,16 @@ import {
   CheckCircle,
   TrendingUp,
   Shield,
-  PiggyBank
+  PiggyBank,
+  Smartphone,
+  CreditCard,
+  Wallet,
+  ArrowUpDown,
+  AlertCircle,
+  HelpCircle,
+  Settings,
+  Lock,
+  Banknote
 } from 'lucide-react';
 
 export default function Guide() {
@@ -81,6 +91,102 @@ export default function Guide() {
     "Keep fees low with index funds",
     "Stay calm during market volatility",
     "Invest regularly, not just when markets are up"
+  ];
+
+  const howAppWorks = [
+    {
+      step: "1",
+      title: "Create Your Account",
+      description: "Sign up securely and complete profile verification",
+      icon: Users
+    },
+    {
+      step: "2", 
+      title: "Link Your Bank Account",
+      description: "Connect your bank account safely using bank-grade encryption",
+      icon: CreditCard
+    },
+    {
+      step: "3",
+      title: "Set Your Investment Goals",
+      description: "Choose risk level and investment preferences",
+      icon: Target
+    },
+    {
+      step: "4",
+      title: "Start Investing",
+      description: "Make one-time investments or set up automatic round-ups",
+      icon: TrendingUp
+    }
+  ];
+
+  const moneyManagement = [
+    {
+      title: "Adding Money",
+      description: "Transfer funds from your linked bank account instantly",
+      methods: ["Bank transfer", "Automatic round-ups", "Recurring deposits"],
+      icon: Wallet
+    },
+    {
+      title: "Withdrawing Money", 
+      description: "Withdraw your funds anytime without penalties",
+      methods: ["Instant withdrawals to bank", "No withdrawal fees", "Available 24/7"],
+      icon: ArrowUpDown
+    },
+    {
+      title: "Security",
+      description: "Your money is protected with industry-standard security",
+      methods: ["FDIC insured", "256-bit encryption", "Two-factor authentication"],
+      icon: Lock
+    }
+  ];
+
+  const faqs = [
+    {
+      question: "Is my money safe?",
+      answer: "Yes, we use bank-grade security and your investments are FDIC insured up to $250,000. We never store your bank login credentials."
+    },
+    {
+      question: "How much do I need to start?",
+      answer: "You can start investing with as little as $1. Our round-up feature lets you invest spare change from everyday purchases."
+    },
+    {
+      question: "When can I withdraw my money?",
+      answer: "You can withdraw your money anytime without penalties. Withdrawals typically take 1-3 business days to reach your bank account."
+    },
+    {
+      question: "What fees do you charge?",
+      answer: "We charge a low monthly fee of $1-3 depending on your account type. No trading fees, no withdrawal fees, no hidden charges."
+    },
+    {
+      question: "How are my investments managed?",
+      answer: "We use diversified ETF portfolios managed by algorithms and overseen by financial experts. You can choose from conservative to aggressive risk levels."
+    },
+    {
+      question: "Can I lose money?",
+      answer: "Yes, all investments carry risk. However, our diversified portfolios help minimize risk, and historically, long-term investing has been profitable."
+    }
+  ];
+
+  const userExpectations = [
+    {
+      title: "Realistic Returns",
+      description: "Expect 6-10% annual returns over the long term",
+      expectation: "Patience is key - investing is for 5+ year goals",
+      icon: BarChart3
+    },
+    {
+      title: "Market Volatility",
+      description: "Your portfolio value will go up and down",
+      expectation: "Short-term fluctuations are normal and expected",
+      icon: TrendingUp
+    },
+    {
+      title: "Gradual Growth", 
+      description: "Wealth building takes time and consistency",
+      expectation: "Small, regular investments compound over time",
+      icon: PiggyBank
+    }
   ];
 
   return (
@@ -183,6 +289,130 @@ export default function Guide() {
                       {option.risk} Risk
                     </Badge>
                   </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* How the App Works */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              How InvestMate Works
+            </CardTitle>
+            <CardDescription>
+              Get started with investing in 4 simple steps
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {howAppWorks.map((step, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                      {step.step}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <step.icon className="h-5 w-5 text-primary" />
+                      <h3 className="font-semibold text-foreground">{step.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Money Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Banknote className="h-5 w-5" />
+              Managing Your Money
+            </CardTitle>
+            <CardDescription>
+              How to add, invest, and withdraw your funds
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-3">
+              {moneyManagement.map((item, index) => (
+                <div key={index} className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-foreground">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <ul className="space-y-1">
+                    {item.methods.map((method, methodIndex) => (
+                      <li key={methodIndex} className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                        <span className="text-muted-foreground">{method}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Setting Expectations */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              What to Expect as an Investor
+            </CardTitle>
+            <CardDescription>
+              Realistic expectations for your investment journey
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-3">
+              {userExpectations.map((item, index) => (
+                <div key={index} className="space-y-3 p-4 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-foreground">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs font-medium text-foreground">{item.expectation}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Frequently Asked Questions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Frequently Asked Questions
+            </CardTitle>
+            <CardDescription>
+              Clear answers to common questions about investing with InvestMate
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {faqs.map((faq, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-foreground mb-2">{faq.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                  {index < faqs.length - 1 && <Separator className="mt-4" />}
                 </div>
               ))}
             </div>
