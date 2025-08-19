@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { supabase } from '@/integrations/supabase/client';
 import { RootState } from '@/store/store';
@@ -34,6 +34,7 @@ export const usePortfolio = () => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [lastPriceUpdate, setLastPriceUpdate] = useState<Date | null>(null);
   const { user } = useSelector((state: RootState) => state.auth);
   const { toast } = useToast();
 
@@ -43,6 +44,23 @@ export const usePortfolio = () => {
       fetchInvestments();
     }
   }, [user]);
+
+  // Set up real-time price updates every 5 minutes
+  useEffect(() => {
+    if (user && investments.length > 0) {
+      const updatePrices = async () => {
+        await updateRealTimePrices();
+      };
+
+      // Update prices immediately
+      updatePrices();
+
+      // Set up interval for updates every 5 minutes
+      const interval = setInterval(updatePrices, 5 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [user, investments.length]);
 
   const fetchPortfolios = async () => {
     if (!user) return;
@@ -317,6 +335,67 @@ export const usePortfolio = () => {
     }
   };
 
+  const updateRealTimePrices = useCallback(async () => {
+    if (!user || investments.length === 0) return;
+
+    try {
+      // Get unique symbols from investments
+      const symbols = Array.from(new Set(investments.map(inv => inv.symbol)));
+      
+      if (symbols.length === 0) return;
+
+      // Fetch current market prices
+      const { data: stockData, error } = await supabase.functions.invoke('fetch-stock-data', {
+        body: { symbols }
+      });
+
+      if (error) {
+        console.error('Error fetching stock data:', error);
+        return;
+      }
+
+      // Update investment prices and recalculate values
+      const updatedInvestments = [...investments];
+      let hasUpdates = false;
+
+      for (const investment of updatedInvestments) {
+        const stockInfo = stockData?.find((stock: any) => stock.symbol === investment.symbol);
+        if (stockInfo && stockInfo.price && stockInfo.price > 0) {
+          const newPrice = parseFloat(stockInfo.price);
+          const newTotalValue = investment.shares * newPrice;
+          
+          // Only update if price changed significantly (more than 0.1%)
+          const priceChange = Math.abs((newPrice - (investment.current_price || investment.avg_cost_per_share)) / (investment.current_price || investment.avg_cost_per_share));
+          
+          if (priceChange > 0.001) {
+            // Update in database
+            await supabase
+              .from('investments')
+              .update({
+                current_price: newPrice,
+                total_value: newTotalValue
+              })
+              .eq('id', investment.id)
+              .eq('user_id', user.id);
+
+            // Update local state
+            investment.current_price = newPrice;
+            investment.total_value = newTotalValue;
+            hasUpdates = true;
+          }
+        }
+      }
+
+      if (hasUpdates) {
+        setInvestments(updatedInvestments);
+        await recalculatePortfolioValues();
+        setLastPriceUpdate(new Date());
+      }
+    } catch (error) {
+      console.error('Error updating real-time prices:', error);
+    }
+  }, [user, investments]);
+
   const recalculatePortfolioValues = async () => {
     if (!user) return;
 
@@ -349,11 +428,13 @@ export const usePortfolio = () => {
     mainPortfolio,
     totalValue,
     loading,
+    lastPriceUpdate,
     fetchPortfolios,
     fetchInvestments,
     addInvestment,
     executeRoundUpInvestment,
     consolidateInvestments,
     recalculatePortfolioValues,
+    updateRealTimePrices,
   };
 };

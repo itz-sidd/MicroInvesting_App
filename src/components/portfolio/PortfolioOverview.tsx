@@ -1,8 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { DemoPortfolioButton } from './DemoPortfolioButton';
-import { TrendingUp, PieChart, DollarSign, Loader2 } from 'lucide-react';
+import { TrendingUp, PieChart, DollarSign, Loader2, RefreshCw } from 'lucide-react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,7 +15,7 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function PortfolioOverview() {
-  const { portfolios, investments, totalValue, loading } = usePortfolio();
+  const { portfolios, investments, totalValue, loading, lastPriceUpdate, updateRealTimePrices } = usePortfolio();
 
   if (loading) {
     return (
@@ -101,8 +102,34 @@ export function PortfolioOverview() {
   // Use the actual calculated total instead of portfolio.total_value
   const displayTotalValue = totalCurrentValue + (mainPortfolio?.cash_balance || 0);
 
+  const handleRefreshPrices = async () => {
+    await updateRealTimePrices();
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
+      {/* Price Update Info */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>
+            {lastPriceUpdate 
+              ? `Last updated: ${lastPriceUpdate.toLocaleTimeString()}`
+              : 'Real-time prices updating...'
+            }
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefreshPrices}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Refresh Prices
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Portfolio Value</CardTitle>
@@ -200,6 +227,7 @@ export function PortfolioOverview() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
