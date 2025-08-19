@@ -115,26 +115,5 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Georgia', serif;
-    position: relative;
-  }
-
-  body::before {
-    content: 'GROWBITS';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: clamp(4rem, 12vw, 8rem);
-    font-weight: 900;
-    color: hsl(var(--foreground) / 0.03);
-    z-index: -1;
-    pointer-events: none;
-    letter-spacing: 0.2em;
-    font-family: 'Arial Black', sans-serif;
-  }
-
-  .dark body::before {
-    color: hsl(var(--foreground) / 0.05);
   }
 }
