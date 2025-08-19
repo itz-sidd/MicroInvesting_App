@@ -11,6 +11,7 @@ import {
   BookOpen,
   Brain
 } from "lucide-react";
+import logo from '@/assets/logo.png';
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -60,14 +61,14 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <div className="p-4 border-b border-sidebar-border">
-          <h2 className={`font-bold text-lg text-sidebar-primary ${collapsed ? 'hidden' : 'block'}`}>
-            InvestMate
-          </h2>
-          {collapsed && (
-            <div className="w-8 h-8 bg-sidebar-primary rounded-md flex items-center justify-center">
-              <span className="text-sidebar-primary-foreground font-bold text-sm">IM</span>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="InvestMate Logo" className="w-8 h-8" />
+            {!collapsed && (
+              <h2 className="font-bold text-lg text-sidebar-primary">
+                InvestMate
+              </h2>
+            )}
+          </div>
         </div>
 
         <SidebarGroup>

@@ -4,6 +4,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut, Bell } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import logo from '@/assets/logo.png';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -22,7 +23,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <header className="h-16 flex items-center justify-between px-6 border-b border-border bg-background">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
-              <h1 className="text-lg font-semibold text-foreground">Micro-Investing Platform</h1>
+              <div className="flex items-center gap-2">
+                <img src={logo} alt="InvestMate Logo" className="w-6 h-6" />
+                <h1 className="text-lg font-semibold text-foreground">InvestMate</h1>
+              </div>
             </div>
             
             <div className="flex items-center gap-3">

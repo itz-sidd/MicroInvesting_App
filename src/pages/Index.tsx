@@ -22,6 +22,7 @@ import {
   Coffee
 } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpg';
+import logo from '@/assets/logo.png';
 
 const Index = () => {
   const { isAuthenticated, initialized } = useAuth();
@@ -79,9 +80,7 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex items-center justify-center mb-8">
-              <div className="bg-primary/10 rounded-full p-4">
-                <PiggyBank className="h-16 w-16 text-primary" />
-              </div>
+              <img src={logo} alt="InvestMate Logo" className="h-20 w-20" />
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
               Invest Your Spare Change,
