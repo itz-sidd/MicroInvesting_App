@@ -345,7 +345,7 @@ export const usePortfolio = () => {
       if (symbols.length === 0) return;
 
       // Fetch current market prices
-      const { data: stockData, error } = await supabase.functions.invoke('fetch-stock-data', {
+      const { data: resp, error } = await supabase.functions.invoke('fetch-stock-data', {
         body: { symbols }
       });
 
@@ -354,18 +354,22 @@ export const usePortfolio = () => {
         return;
       }
 
+      // The function returns { data: StockData[] }
+      const stockList = Array.isArray((resp as any)?.data) ? (resp as any).data : Array.isArray(resp) ? (resp as any) : [];
+
       // Update investment prices and recalculate values
       const updatedInvestments = [...investments];
       let hasUpdates = false;
 
       for (const investment of updatedInvestments) {
-        const stockInfo = stockData?.find((stock: any) => stock.symbol === investment.symbol);
+        const stockInfo = stockList.find((stock: any) => stock.symbol === investment.symbol);
         if (stockInfo && stockInfo.price && stockInfo.price > 0) {
-          const newPrice = parseFloat(stockInfo.price);
+          const newPrice = parseFloat(String(stockInfo.price));
+          const basePrice = investment.current_price || investment.avg_cost_per_share;
           const newTotalValue = investment.shares * newPrice;
           
           // Only update if price changed significantly (more than 0.1%)
-          const priceChange = Math.abs((newPrice - (investment.current_price || investment.avg_cost_per_share)) / (investment.current_price || investment.avg_cost_per_share));
+          const priceChange = Math.abs((newPrice - basePrice) / basePrice);
           
           if (priceChange > 0.001) {
             // Update in database
