@@ -82,7 +82,7 @@ const Index = () => {
             <div className="flex items-center justify-center mb-8">
               <img src={logo} alt="InvestMate Logo" className="h-20 w-20" />
             </div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight font-serif">
               Invest Your Spare Change,
               <br />
               <span className="text-primary">Build Your Future</span>
