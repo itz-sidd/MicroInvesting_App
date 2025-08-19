@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { DemoPortfolioButton } from './DemoPortfolioButton';
-import { TrendingUp, PieChart, DollarSign, Loader2, RefreshCw } from 'lucide-react';
+import { TrendingUp, PieChart, DollarSign, Loader2, RefreshCw, TrendingDown } from 'lucide-react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -129,7 +129,7 @@ export function PortfolioOverview() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Portfolio Value</CardTitle>
@@ -138,11 +138,28 @@ export function PortfolioOverview() {
         <CardContent>
           <div className="text-2xl font-bold">${displayTotalValue.toFixed(2)}</div>
           <div className="flex items-center gap-2 mt-2">
-            <TrendingUp className={`h-4 w-4 ${gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+            {gainLoss >= 0 ? (
+              <TrendingUp className="h-4 w-4 text-green-500" />
+            ) : (
+              <TrendingDown className="h-4 w-4 text-red-500" />
+            )}
             <span className={`text-sm ${gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
               ${gainLoss.toFixed(2)} ({gainLossPercentage.toFixed(2)}%)
             </span>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Invested</CardTitle>
+          <DollarSign className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${totalInvested.toFixed(2)}</div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Cost basis of all investments
+          </p>
         </CardContent>
       </Card>
 
@@ -171,8 +188,10 @@ export function PortfolioOverview() {
           </p>
         </CardContent>
       </Card>
+      </div>
 
-      <Card className="md:col-span-2 lg:col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card>
         <CardHeader>
           <CardTitle>Asset Allocation</CardTitle>
           <CardDescription>Current portfolio strategy</CardDescription>
@@ -184,7 +203,7 @@ export function PortfolioOverview() {
         </CardContent>
       </Card>
 
-      <Card className="md:col-span-2">
+      <Card>
         <CardHeader>
           <CardTitle>Recent Investments</CardTitle>
           <CardDescription>Your latest investment positions</CardDescription>
