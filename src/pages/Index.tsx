@@ -16,8 +16,12 @@ import {
   Clock,
   DollarSign,
   BarChart3,
-  Users
+  Users,
+  Heart,
+  Star,
+  Coffee
 } from 'lucide-react';
+import heroBackground from '@/assets/hero-background.jpg';
 
 const Index = () => {
   const { isAuthenticated, initialized } = useAuth();
@@ -31,167 +35,236 @@ const Index = () => {
 
   const features = [
     {
-      icon: PiggyBank,
-      title: 'Round-Up Investing',
-      description: 'Automatically invest your spare change from everyday purchases'
+      icon: Coffee,
+      title: 'Your Daily Coffee, Your Future Wealth',
+      description: 'That $4.50 latte? We turn the spare change from every purchase into smart investments. It\'s like having a financial advisor in your pocket.'
     },
     {
-      icon: TrendingUp,
-      title: 'Diversified Portfolios',
-      description: 'Professional portfolio management with low-cost ETFs'
+      icon: Heart,
+      title: 'Built by Humans, for Humans',
+      description: 'No confusing jargon or intimidating interfaces. We believe investing should feel as natural as checking your texts.'
     },
     {
       icon: Shield,
-      title: 'Secure & Protected',
-      description: 'Bank-level security with SIPC protection up to $500K'
+      title: 'Your Money, Our Promise',
+      description: 'Sleep soundly knowing your investments are protected with the same security standards banks use. Because trust isn\'t optional.'
     },
     {
-      icon: Smartphone,
-      title: 'Mobile First',
-      description: 'Manage your investments anywhere with our intuitive app'
+      icon: Star,
+      title: 'Start Small, Dream Big',
+      description: 'Whether you\'re saving for a vacation or retirement, every journey begins with a single step. We\'ll be with you for the entire ride.'
     }
   ];
 
   const benefits = [
-    'Start with as little as $5',
-    'No account minimums or trading fees',
-    'Automatic rebalancing',
-    'Tax-loss harvesting',
-    'Real-time portfolio tracking'
+    'Begin your journey with just the change from your morning coffee',
+    'Zero fees means more money working for you, not against you',
+    'We handle the complex stuff so you can focus on living your life',
+    'Smart algorithms work behind the scenes to optimize your returns',
+    'Watch your wealth grow in real-time, one purchase at a time'
   ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="flex items-center justify-center mb-6">
-            <PiggyBank className="h-16 w-16 text-primary" />
-          </div>
-          <h1 className="text-5xl font-bold text-foreground mb-6">
-            Invest Your Spare Change
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Turn everyday purchases into investments. Start building wealth with micro-investing 
-            that rounds up your purchases and invests the difference automatically.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-3"
-              onClick={() => navigate('/auth')}
-            >
-              Get Started Free
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="text-lg px-8 py-3"
-              onClick={() => navigate('/auth')}
-            >
-              Sign In
-            </Button>
-          </div>
+      <div 
+        className="relative min-h-screen flex items-center justify-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${heroBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="text-center max-w-5xl mx-auto">
+            <div className="flex items-center justify-center mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-full p-6 border border-white/20">
+                <PiggyBank className="h-16 w-16 text-white" />
+              </div>
+            </div>
+            <h1 className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight">
+              Every Purchase,<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
+                A Step Closer
+              </span><br />
+              to Your Dreams
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+              What if we told you that your morning coffee could fund your retirement? 
+              That your grocery runs could pay for your dream vacation? Welcome to the future 
+              of investing—where every penny counts and every purchase matters.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+              <Button 
+                size="lg" 
+                className="text-lg px-12 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white border-0 shadow-2xl transform hover:scale-105 transition-all duration-300"
+                onClick={() => navigate('/auth')}
+              >
+                Start Your Journey
+                <ArrowRight className="ml-3 h-6 w-6" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-12 py-4 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 shadow-xl"
+                onClick={() => navigate('/auth')}
+              >
+                I'm Already Dreaming
+              </Button>
+            </div>
 
-          <div className="mt-8 flex items-center justify-center gap-4 text-sm text-muted-foreground">
-            <Badge variant="secondary">SIPC Protected</Badge>
-            <Badge variant="secondary">SEC Registered</Badge>
-            <Badge variant="secondary">Bank-Level Security</Badge>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+              <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+                <span className="text-white/90">✨ SIPC Protected</span>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+                <span className="text-white/90">🛡️ SEC Registered</span>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+                <span className="text-white/90">🔒 Bank-Level Security</span>
+              </div>
+            </div>
+            
+            <div className="mt-16 text-white/70 text-sm">
+              <p className="italic">
+                "The best investment you can make is in yourself... and your spare change." 
+                <br />— Over 50,000 happy dreamers and counting
+              </p>
+            </div>
           </div>
         </div>
+        
+        {/* Floating elements for visual appeal */}
+        <div className="absolute top-20 left-10 w-4 h-4 bg-yellow-400 rounded-full opacity-60 animate-pulse"></div>
+        <div className="absolute top-32 right-20 w-6 h-6 bg-orange-500 rounded-full opacity-40 animate-pulse delay-300"></div>
+        <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-white rounded-full opacity-50 animate-pulse delay-700"></div>
+        <div className="absolute bottom-20 right-1/3 w-5 h-5 bg-yellow-300 rounded-full opacity-30 animate-pulse delay-1000"></div>
       </div>
 
       {/* Features Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Everything You Need to Start Investing
+      <div className="container mx-auto px-4 py-20 bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            Why People Fall in Love with InvestMate
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Our platform makes investing simple, affordable, and automatic
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            We didn't just build an app—we crafted an experience that makes you excited 
+            about your financial future. Here's what makes our community so passionate.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           {features.map((feature, index) => (
-            <Card key={index} className="text-center">
-              <CardHeader>
-                <div className="flex justify-center mb-4">
-                  <feature.icon className="h-12 w-12 text-primary" />
+            <Card key={index} className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 border-primary/10 hover:border-primary/30">
+              <CardHeader className="pb-4">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-gradient-to-br from-primary/20 to-primary/40 rounded-full p-4 group-hover:scale-110 transition-transform duration-300">
+                    <feature.icon className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
+                <CardTitle className="text-xl font-bold text-center group-hover:text-primary transition-colors duration-300">
+                  {feature.title}
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <CardDescription>{feature.description}</CardDescription>
+              <CardContent className="text-center">
+                <CardDescription className="text-base leading-relaxed">
+                  {feature.description}
+                </CardDescription>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Benefits Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h3 className="text-2xl font-bold text-foreground mb-6">
-              Why Choose InvestMate?
-            </h3>
-            <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                The Difference Is in the Details
+              </h3>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                We sweat the small stuff so you don't have to. Every feature, every interaction, 
+                every notification is designed with one goal: making your financial future brighter.
+              </p>
+            </div>
+            
+            <div className="space-y-6">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <span className="text-foreground">{benefit}</span>
+                <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors duration-300">
+                  <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-full p-1 flex-shrink-0 mt-1">
+                    <CheckCircle className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-foreground text-lg leading-relaxed">{benefit}</span>
                 </div>
               ))}
             </div>
+            
             <Button 
-              className="mt-8" 
+              className="mt-8 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-lg px-8 py-3 shadow-lg transform hover:scale-105 transition-all duration-300" 
               size="lg"
               onClick={() => navigate('/auth')}
             >
-              Start Investing Today
+              Start Your Success Story
+              <Heart className="ml-2 h-5 w-5" />
             </Button>
           </div>
           
-          <Card className="p-8">
+          <Card className="p-8 bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 shadow-2xl">
             <CardHeader>
-              <CardTitle className="text-xl">See How It Works</CardTitle>
+              <CardTitle className="text-2xl font-bold text-center mb-4">
+                It's Easier Than Ordering Pizza 🍕
+              </CardTitle>
+              <p className="text-center text-muted-foreground">
+                Seriously, we timed it. Most people set up their account faster than choosing toppings.
+              </p>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm">
+            <CardContent className="space-y-8">
+              <div className="flex items-start gap-6 p-4 rounded-lg bg-background/50">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                   1
                 </div>
                 <div>
-                  <h4 className="font-semibold">Connect Your Bank</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Securely link your checking account in seconds
+                  <h4 className="font-bold text-lg mb-2">Connect & Relax</h4>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Link your bank account with our military-grade security. Takes 30 seconds, 
+                    lasts a lifetime. We're more protective of your data than you are of your Netflix password.
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm">
+              <div className="flex items-start gap-6 p-4 rounded-lg bg-background/50">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                   2
                 </div>
                 <div>
-                  <h4 className="font-semibold">Spend Normally</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Make purchases with your linked debit card
+                  <h4 className="font-bold text-lg mb-2">Live Your Life</h4>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Buy your coffee, grab groceries, treat yourself to dinner. We're silently 
+                    working in the background, turning your everyday spending into tomorrow's wealth.
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm">
+              <div className="flex items-start gap-6 p-4 rounded-lg bg-background/50">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                   3
                 </div>
                 <div>
-                  <h4 className="font-semibold">Invest Automatically</h4>
-                  <p className="text-sm text-muted-foreground">
-                    We round up purchases and invest the spare change
+                  <h4 className="font-bold text-lg mb-2">Watch Magic Happen</h4>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Every purchase gets rounded up, and that spare change goes straight into 
+                    a diversified portfolio. It's like having a financial fairy godmother.
                   </p>
                 </div>
+              </div>
+              
+              <div className="text-center pt-4 border-t border-primary/20">
+                <p className="text-sm text-muted-foreground italic">
+                  Average setup time: 2 minutes<br />
+                  Average "wow, this is actually working" moment: 1 week
+                </p>
               </div>
             </CardContent>
           </Card>
