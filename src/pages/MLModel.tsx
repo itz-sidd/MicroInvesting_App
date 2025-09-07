@@ -9,10 +9,15 @@ import { RiskAssessmentWizard } from '@/components/ml/RiskAssessmentWizard';
 import { MLRecommendations } from '@/components/ml/MLRecommendations';
 import { PortfolioOptimizer } from '@/components/ml/PortfolioOptimizer';
 import { useRiskAssessment } from '@/hooks/useRiskAssessment';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function MLModel() {
   const { assessment, loading } = useRiskAssessment();
+  const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+
+  console.log('MLModel - assessment:', assessment, 'loading:', loading);
+  console.log('MLModel - user:', user, 'isAuthenticated:', isAuthenticated);
 
   return (
     <DashboardLayout>

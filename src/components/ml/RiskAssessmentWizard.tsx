@@ -22,6 +22,8 @@ export function RiskAssessmentWizard({ onComplete }: RiskAssessmentWizardProps) 
     assessment 
   } = useRiskAssessment();
   
+  console.log('RiskAssessmentWizard - assessment:', assessment, 'loading:', loading);
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

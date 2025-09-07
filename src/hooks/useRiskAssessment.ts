@@ -130,7 +130,12 @@ export function useRiskAssessment() {
   const [responses, setResponses] = useState<Record<string, number>>({});
 
   const fetchLatestAssessment = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('useRiskAssessment - No user found');
+      return;
+    }
+
+    console.log('useRiskAssessment - Fetching assessment for user:', user.id);
 
     try {
       setLoading(true);
