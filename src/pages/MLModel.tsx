@@ -8,6 +8,7 @@ import { Brain, Zap, TrendingUp, Target, Clock, BarChart3 } from 'lucide-react';
 import { RiskAssessmentWizard } from '@/components/ml/RiskAssessmentWizard';
 import { MLRecommendations } from '@/components/ml/MLRecommendations';
 import { PortfolioOptimizer } from '@/components/ml/PortfolioOptimizer';
+import { VoiceChatbot } from '@/components/ml/VoiceChatbot';
 import { useRiskAssessment } from '@/hooks/useRiskAssessment';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -30,11 +31,12 @@ export default function MLModel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="assessment">Risk Assessment</TabsTrigger>
             <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
             <TabsTrigger value="optimizer">Portfolio Optimizer</TabsTrigger>
+            <TabsTrigger value="chatbot">AI Advisor Chat</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -76,7 +78,7 @@ export default function MLModel() {
             </Card>
 
             {/* Live Features */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader>
                   <div className="flex items-center gap-3">
@@ -139,6 +141,37 @@ export default function MLModel() {
                   </p>
                 </CardContent>
               </Card>
+
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/20 rounded-lg">
+                      <Brain className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        AI Advisor Chat 
+                        <Badge variant="default" className="text-xs">NEW</Badge>
+                      </CardTitle>
+                      <CardDescription>
+                        🎙️ Voice-enabled financial advisor
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Talk naturally with your AI financial advisor to get personalized insights about your portfolio, risk assessment, and investment strategies.
+                  </p>
+                  <Button 
+                    size="sm" 
+                    className="mt-3 w-full"
+                    onClick={() => setActiveTab('chatbot')}
+                  >
+                    Try AI Chat
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
 
             {/* How It Works */}
@@ -198,6 +231,16 @@ export default function MLModel() {
 
           <TabsContent value="optimizer" className="space-y-6">
             <PortfolioOptimizer />
+          </TabsContent>
+
+          <TabsContent value="chatbot" className="space-y-6">
+            <VoiceChatbot 
+              userContext={{
+                riskCategory: assessment?.risk_category,
+                riskScore: assessment?.risk_score,
+                portfolio: null // You can pass portfolio data here if available
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>

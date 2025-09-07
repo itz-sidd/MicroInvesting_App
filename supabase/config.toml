@@ -70,3 +70,6 @@ runtime = "base"
 
 [functions.fetch-stock-data]
 verify_jwt = false
+
+[functions.realtime-chat]
+verify_jwt = false
