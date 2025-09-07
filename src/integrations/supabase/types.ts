@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -109,6 +109,123 @@ export type Database = {
           },
         ]
       }
+      market_data_cache: {
+        Row: {
+          created_at: string
+          data: Json
+          data_type: string
+          expires_at: string
+          id: string
+          last_updated: string
+          symbol: string
+          time_period: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          data_type: string
+          expires_at?: string
+          id?: string
+          last_updated?: string
+          symbol: string
+          time_period: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          data_type?: string
+          expires_at?: string
+          id?: string
+          last_updated?: string
+          symbol?: string
+          time_period?: string
+        }
+        Relationships: []
+      }
+      ml_recommendations: {
+        Row: {
+          confidence_score: number
+          created_at: string
+          expected_return: number | null
+          expected_risk: number | null
+          id: string
+          market_conditions: Json | null
+          reasoning: Json | null
+          recommendation_type: string
+          recommended_allocation: Json
+          updated_at: string
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          confidence_score?: number
+          created_at?: string
+          expected_return?: number | null
+          expected_risk?: number | null
+          id?: string
+          market_conditions?: Json | null
+          reasoning?: Json | null
+          recommendation_type?: string
+          recommended_allocation?: Json
+          updated_at?: string
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          confidence_score?: number
+          created_at?: string
+          expected_return?: number | null
+          expected_risk?: number | null
+          id?: string
+          market_conditions?: Json | null
+          reasoning?: Json | null
+          recommendation_type?: string
+          recommended_allocation?: Json
+          updated_at?: string
+          user_id?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      portfolio_performance_history: {
+        Row: {
+          allocation_snapshot: Json | null
+          benchmark_return: number | null
+          created_at: string
+          cumulative_return: number | null
+          daily_return: number | null
+          date: string
+          id: string
+          portfolio_id: string
+          total_value: number
+          user_id: string
+        }
+        Insert: {
+          allocation_snapshot?: Json | null
+          benchmark_return?: number | null
+          created_at?: string
+          cumulative_return?: number | null
+          daily_return?: number | null
+          date: string
+          id?: string
+          portfolio_id: string
+          total_value?: number
+          user_id: string
+        }
+        Update: {
+          allocation_snapshot?: Json | null
+          benchmark_return?: number | null
+          created_at?: string
+          cumulative_return?: number | null
+          daily_return?: number | null
+          date?: string
+          id?: string
+          portfolio_id?: string
+          total_value?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       portfolios: {
         Row: {
           allocation_strategy: Json | null
@@ -152,7 +269,11 @@ export type Database = {
           date_of_birth: string | null
           full_name: string | null
           id: string
+          income_range: string | null
+          investment_experience: string | null
+          investment_goals: Json | null
           investment_preferences: Json | null
+          investment_timeline: string | null
           phone: string | null
           risk_tolerance: string | null
           round_up_enabled: boolean | null
@@ -165,7 +286,11 @@ export type Database = {
           date_of_birth?: string | null
           full_name?: string | null
           id?: string
+          income_range?: string | null
+          investment_experience?: string | null
+          investment_goals?: Json | null
           investment_preferences?: Json | null
+          investment_timeline?: string | null
           phone?: string | null
           risk_tolerance?: string | null
           round_up_enabled?: boolean | null
@@ -178,7 +303,11 @@ export type Database = {
           date_of_birth?: string | null
           full_name?: string | null
           id?: string
+          income_range?: string | null
+          investment_experience?: string | null
+          investment_goals?: Json | null
           investment_preferences?: Json | null
+          investment_timeline?: string | null
           phone?: string | null
           risk_tolerance?: string | null
           round_up_enabled?: boolean | null
@@ -277,6 +406,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_risk_assessments: {
+        Row: {
+          completed_at: string
+          created_at: string
+          id: string
+          question_responses: Json
+          risk_category: string
+          risk_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          question_responses?: Json
+          risk_category?: string
+          risk_score?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          question_responses?: Json
+          risk_category?: string
+          risk_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
