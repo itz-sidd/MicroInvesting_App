@@ -1,9 +1,19 @@
+import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Zap, TrendingUp, Target, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Brain, Zap, TrendingUp, Target, Clock, BarChart3 } from 'lucide-react';
+import { RiskAssessmentWizard } from '@/components/ml/RiskAssessmentWizard';
+import { MLRecommendations } from '@/components/ml/MLRecommendations';
+import { PortfolioOptimizer } from '@/components/ml/PortfolioOptimizer';
+import { useRiskAssessment } from '@/hooks/useRiskAssessment';
 
 export default function MLModel() {
+  const { assessment, loading } = useRiskAssessment();
+  const [activeTab, setActiveTab] = useState('overview');
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -14,163 +24,177 @@ export default function MLModel() {
           </p>
         </div>
 
-        {/* Coming Soon Banner */}
-        <Card className="border-primary/20 bg-primary/5">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-              <Brain className="h-8 w-8 text-primary" />
-            </div>
-            <CardTitle className="text-2xl">Coming Soon</CardTitle>
-            <CardDescription className="text-lg">
-              Revolutionary AI model for personalized investment strategies
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <Badge variant="secondary" className="text-sm px-4 py-2">
-                In Development
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="assessment">Risk Assessment</TabsTrigger>
+            <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
+            <TabsTrigger value="optimizer">Portfolio Optimizer</TabsTrigger>
+          </TabsList>
 
-        {/* Planned Features */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <TrendingUp className="h-5 w-5 text-primary" />
+          <TabsContent value="overview" className="space-y-6">
+            {/* Status Banner */}
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Brain className="h-8 w-8 text-primary" />
                 </div>
-                <div>
-                  <CardTitle className="text-lg">Smart Predictions</CardTitle>
-                  <CardDescription>Market trend analysis</CardDescription>
+                <CardTitle className="text-2xl">AI Investment Model</CardTitle>
+                <CardDescription className="text-lg">
+                  {assessment 
+                    ? 'Your personalized AI recommendations are ready'
+                    : 'Complete your risk assessment to get personalized recommendations'
+                  }
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center space-y-4">
+                  {assessment ? (
+                    <Badge variant="default" className="text-sm px-4 py-2">
+                      ✅ Risk Profile: {assessment.risk_category}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="text-sm px-4 py-2">
+                      📊 Assessment Required
+                    </Badge>
+                  )}
+                  
+                  <div className="flex justify-center">
+                    <Button 
+                      onClick={() => setActiveTab(assessment ? 'recommendations' : 'assessment')}
+                    >
+                      {assessment ? 'View Recommendations' : 'Start Risk Assessment'}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Advanced algorithms will analyze market patterns to predict optimal investment timing and asset allocation.
-              </p>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Target className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg">Personalized Strategy</CardTitle>
-                  <CardDescription>Tailored to your goals</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                AI will create personalized investment strategies based on your risk tolerance, goals, and spending patterns.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Zap className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg">Real-time Optimization</CardTitle>
-                  <CardDescription>Automatic rebalancing</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Continuous portfolio optimization based on market conditions and your evolving financial situation.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* What to Expect */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              What to Expect
-            </CardTitle>
-            <CardDescription>
-              Features being developed for the AI investment model
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                <div>
-                  <h4 className="font-medium text-foreground">Risk Assessment AI</h4>
+            {/* Live Features */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <Target className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Risk Assessment</CardTitle>
+                      <CardDescription>
+                        {assessment ? '✅ Completed' : '⏳ Ready to start'}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Machine learning algorithms that analyze your spending patterns and financial behavior to determine optimal risk levels.
+                    Intelligent questionnaire analyzes your risk tolerance and investment preferences for personalized recommendations.
                   </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                <div>
-                  <h4 className="font-medium text-foreground">Market Sentiment Analysis</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Natural language processing to analyze news, social media, and market data for investment insights.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                <div>
-                  <h4 className="font-medium text-foreground">Predictive Analytics</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Advanced forecasting models to predict market movements and suggest optimal investment timing.
-                  </p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <div className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                <div>
-                  <h4 className="font-medium text-foreground">Automated Rebalancing</h4>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <BarChart3 className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Portfolio Optimization</CardTitle>
+                      <CardDescription>
+                        {assessment ? '🚀 Available' : '🔒 Requires assessment'}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Smart portfolio rebalancing based on AI recommendations and market conditions.
+                    Modern Portfolio Theory combined with machine learning to optimize your asset allocation for maximum risk-adjusted returns.
                   </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </Card>
 
-        {/* Development Timeline */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Development Progress</CardTitle>
-            <CardDescription>
-              Stay updated on our AI model development
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-full">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium">Research & Development Phase</span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-4">
-                Our team is working on implementing cutting-edge machine learning algorithms. 
-                Check back soon for updates!
-              </p>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Real-time Analytics</CardTitle>
+                      <CardDescription>
+                        {assessment ? '📈 Active' : '⏸️ Pending setup'}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Continuous market analysis and portfolio rebalancing recommendations based on current conditions and your goals.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* How It Works */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5" />
+                  How Our AI Works
+                </CardTitle>
+                <CardDescription>
+                  Three-layer approach combining proven financial theory with modern AI
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="text-center space-y-2">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+                      <span className="text-white font-bold">1</span>
+                    </div>
+                    <h4 className="font-semibold">Collaborative Filtering</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Learns from similar users' successful portfolios and investment patterns
+                    </p>
+                  </div>
+                  
+                  <div className="text-center space-y-2">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                      <span className="text-white font-bold">2</span>
+                    </div>
+                    <h4 className="font-semibold">Portfolio Optimization</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Applies Modern Portfolio Theory to maximize risk-adjusted returns
+                    </p>
+                  </div>
+                  
+                  <div className="text-center space-y-2">
+                    <div className="w-12 h-12 bg-gradient-to-r from-pink-600 to-red-600 rounded-full flex items-center justify-center mx-auto">
+                      <span className="text-white font-bold">3</span>
+                    </div>
+                    <h4 className="font-semibold">Market Forecasting</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Time series analysis predicts short-term market movements
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="assessment" className="space-y-6">
+            <RiskAssessmentWizard onComplete={() => setActiveTab('recommendations')} />
+          </TabsContent>
+
+          <TabsContent value="recommendations" className="space-y-6">
+            <MLRecommendations />
+          </TabsContent>
+
+          <TabsContent value="optimizer" className="space-y-6">
+            <PortfolioOptimizer />
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );
