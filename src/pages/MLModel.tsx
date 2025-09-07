@@ -22,7 +22,7 @@ export default function MLModel() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 pb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">AI-Powered Investment Model</h1>
           <p className="text-muted-foreground mt-2">
@@ -31,13 +31,15 @@ export default function MLModel() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="assessment">Risk Assessment</TabsTrigger>
-            <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
-            <TabsTrigger value="optimizer">Portfolio Optimizer</TabsTrigger>
-            <TabsTrigger value="chatbot">AI Advisor Chat</TabsTrigger>
-          </TabsList>
+          <div className="w-full overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-5 min-w-fit">
+              <TabsTrigger value="overview" className="whitespace-nowrap">Overview</TabsTrigger>
+              <TabsTrigger value="assessment" className="whitespace-nowrap">Risk Assessment</TabsTrigger>
+              <TabsTrigger value="recommendations" className="whitespace-nowrap">AI Recommendations</TabsTrigger>
+              <TabsTrigger value="optimizer" className="whitespace-nowrap">Portfolio Optimizer</TabsTrigger>
+              <TabsTrigger value="chatbot" className="whitespace-nowrap">AI Advisor Chat</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="overview" className="space-y-6">
             {/* Status Banner */}
@@ -233,7 +235,7 @@ export default function MLModel() {
             <PortfolioOptimizer />
           </TabsContent>
 
-          <TabsContent value="chatbot" className="space-y-6">
+          <TabsContent value="chatbot" className="space-y-6 overflow-hidden">
             <VoiceChatbot 
               userContext={{
                 riskCategory: assessment?.risk_category,
